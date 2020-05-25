@@ -62,7 +62,7 @@ def state_data():
         state = str(input("Which state would you like to view COVID-19 data for? Press enter to continue. "))
 
         #IF USER ENTERS VALID STATE, SHOW CORRESPONDING GRAPH
-        if state in cv.values:
+        if state in cv.state.values:
             cv_state = cv.loc[cv.state == state]
             cv_state =cv_state.groupby(['state','date']).deaths.sum()
             cv_state =cv_state.reset_index()
@@ -83,7 +83,7 @@ def state_data():
             break
         # IF INCORRECT SPELLING, TRY AGAIN
         else:
-            print("Sorry we couldn't find data for " + state + ". Please check your spelling and try again. ")
+            print("> Sorry we couldn't find data for " + state + ". Please check your spelling and try again. ")
             print("========================")
 
 
@@ -122,7 +122,7 @@ def county_data():
         #ASK USER FOR COUNTY
         user_county = str(input("Which county would you like to view COVID-19 data for? Please enter 'full county, full state'. Press enter once done. "))
         #IF VALID COUNTY, SHOWS CORRESPONDING GRAPH
-        if user_county in cv.values:
+        if user_county in cv.county_state.values:
             cv_county = cv.loc[cv.county_state == user_county]
             cv_county = cv_county.loc[:, ['county_state', 'date', 'deaths']]
             print(cv_county)
@@ -143,7 +143,7 @@ def county_data():
 
         # IF INCORRECT SPELLING, TRY AGAIN
         else:
-            print("Sorry we couldn't find data for " + user_county + ". Please check your spelling and try again. ")
+            print("> Sorry we couldn't find data for " + user_county + ". Please check your spelling and try again. ")
             print("========================")
 
 #GOODBYE MESSAGE
