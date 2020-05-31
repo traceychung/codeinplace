@@ -1,15 +1,18 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import dateutil.parser
 
 ## READ CSV FILE
-cv = pd.read_csv('/users/traceychung/desktop/uscounties.csv',
-                 parse_dates=['date'])
+# url = 'https://github.com/nytimes/covid-19-data/blob/master/us-counties.csv'
+cv = pd.read_csv('https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
 
 ## ADD COUNTY_STATE COLUMN
 cv['county_state'] = cv['county'] + ', ' + cv['state']
 
-## SELECT DATA FROM LASTEST DATE (5/20/2020)
-is_latest = cv['date']=='2020-05-20'
+## SELECT DATA FROM LASTEST DATE
+recent_date = cv['date'].max()
+recent_date = str(dateutil.parser.parse(recent_date).date())
+is_latest = cv['date'] == recent_date
 cv_latest = cv[is_latest]
 
 def main():
@@ -42,8 +45,11 @@ def top_state():
     print(cv_deaths)
     print("========================")
 
+    #PUTS TOP 5 STATE NAMES INTO A LIST
+    top_states_list = cv_deaths['state'].tolist()
+
     #GRAPHS TOP 5 STATES IN CHART
-    states = ['New York', 'New Jersey', 'Massachusetts', 'Michigan', 'Pennsylvania']
+    states = top_states_list
     show = cv[cv['state'].isin(states)]
     show = show.loc[:, ['state', 'date', 'deaths']]
     show = show.groupby(['state', 'date']).sum()
@@ -99,13 +105,17 @@ def top_county():
     cv_county = cv_county.reset_index()
     cv_deaths = cv_county.sort_values(by='deaths', ascending=False)
     plt.show()
+
     #SHOWS TOP 5 COUNTIES
     cv_deaths = cv_deaths.head(5)
     print(cv_deaths)
     print("========================")
+
+    #PUTS TOP 5 COUNTY NAMES INTO A LIST
+    top_counties_list = cv_deaths['county_state'].tolist()
+
     #GRAPH OF TOP 5 DEATHS / COUNTY
-    county_states = ['New York City, New York', 'Cook, Illinois', 'Wayne, Michigan', 'Nassau, New York',
-                    'Los Angeles, California']
+    county_states = top_counties_list
     show = cv[cv['county_state'].isin(county_states)]
     show = show.loc[:, ['county_state', 'date', 'deaths']]
     show = show.groupby(['county_state', 'date']).sum()
